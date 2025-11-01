@@ -13,3 +13,15 @@ qemu-system-aarch64 \
     -device virtio-net-device,netdev=eth0 \
     -drive file=buildroot/output/images/rootfs.ext4,if=none,format=raw,id=hd0 \
     -device virtio-blk-device,drive=hd0 -device virtio-rng-pci
+
+# Añadir estas líneas para el reenvío de puertos
+HOST_PORT_SSH=10022
+GUEST_PORT_SSH=22
+HOST_PORT_AESD=9000
+GUEST_PORT_AESD=9000
+
+$QEMU_SYSTEM_ARM \
+    # ... tus parámetros actuales ...
+    -net nic \
+    -net user,hostfwd=tcp::${HOST_PORT_SSH}-:${GUEST_PORT_SSH},hostfwd=tcp::${HOST_PORT_AESD}-:${GUEST_PORT_AESD} \
+    "$@"
